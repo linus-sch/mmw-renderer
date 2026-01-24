@@ -22,10 +22,11 @@ A powerful, lightweight JavaScript engine that transforms JSON-based mind map da
 
 <h4 align="center">
   <a href="https://js.mindmapwizard.com">
-    <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/demo-link-button.webp" alt="Demo button of Mind Map Wizard" style="width: 120px;">
-</a>
+    <img src="https://raw.githubusercontent.com/linus-sch/mmw-renderer/refs/heads/main/SRC/assets/demo-btn.png" alt="Demo button of Mind Map Wizard" style="width: 120px;">
+  </a>
 </h4>
 <br>
+
 
 ## Interaction & Controls
   <figure>
