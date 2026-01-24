@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Map Wizard Renderer Demo</title>
+
+    <link rel="icon" type="image/png" href="/assets/favicon128.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/assets/favicon96.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/assets/favicon64.png" sizes="48x48">
+    <link rel="icon" type="image/png" href="/assets/favicon48.png" sizes="64x48">
+    <link rel="icon" type="image/png" href="/assets/favicon32.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/assets/favicon16.png" sizes="96x96">
+
+    <link rel="stylesheet" href="/styles.css">
+
+    <meta name="description"
+        content="A lightweight JavaScript tool that converts Markdown text into colorful SVG mind maps.">
+
+    <meta property="og:title" content="Mind Map Wizard Renderer Demo">
+    <meta property="og:description" content="A lightweight JavaScript tool that converts Markdown text into colorful SVG mind maps.
+        ">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/assets/meta-img-light.jpg">
+    <meta property="og:url" content="https://js.mindmapwizard.com">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Mind Map Wizard Renderer Demo">
+    <meta name="twitter:description" content="A lightweight JavaScript tool for rendering Markdown as SVG mind maps.">
+    <meta name="twitter:image" content="/assets/meta-img-light.jpg">
+</head>
+
+<body>
+
+    <main id="app-container">
+        <div id="editor-container" style="display: none;">
+            <div class="pane-header">
+                <div>
+                    <a href="https://github.com/linus-sch/mindmapwizard-renderer" style="text-decoration: none;"
+                        class="mmw-logo-desktop">
+                        <img src="/assets/favicon64.png" alt="MMW Logo" width="35px"
+                            style="position: relative; top: 3px;">
+                    </a>
+                    MMW JSON
+                </div>
+            </div>
+            <textarea id="json-editor" spellcheck="false"></textarea>
+        </div>
+        <div id="slider" style="display: none;"></div>
+        <div id="preview-container">
+            <div class="pane-header">
+                <span>
+                    <a href="https://github.com/linus-sch/mindmapwizard-renderer" style="text-decoration: none;"
+                        class="mmw-logo-mobile">
+                        <img src="/assets/favicon64.png" alt="MMW Logo" width="35px"
+                            style="position: relative; top: 3px;">
+                    </a>
+                    Mind Map</span>
+                <div class="pane-controls">
+                    <button id="edit-json-btn" class="control-btn" title="Edit JSON">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-code-icon lucide-code">
+                            <polyline points="16,18 22,12 16,6" />
+                            <polyline points="8,6 2,12 8,18" />
+                        </svg>
+                    </button>
+                    <a href="https://github.com/linus-sch/mindmapwizard-renderer">
+                        <span class="hide-on-mobile">Source Code
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-arrow-up-right-icon lucide-arrow-up-right">
+                                <path d="M7 7h10v10" />
+                                <path d="M7 17 17 7" />
+                            </svg>
+                        </span>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="github-icon">
+                            <path
+                                d="M12 .5C5.373.5 0 5.873 0 12.5c0 5.25 3.438 9.688 8.207 11.285.6.111.793-.261.793-.577 0-.287-.011-1.243-.017-2.25-3.338.724-4.043-1.607-4.043-1.607-.546-1.384-1.333-1.754-1.333-1.754-1.086-.743.083-.728.083-.728 1.202.084 1.83 1.236 1.83 1.236 1.067 1.826 2.8 1.297 3.48.992.108-.774.418-1.297.76-1.597-2.665-.303-5.467-1.333-5.467-5.933 0-1.313.469-2.386 1.236-3.227-.124-.303-.536-1.53.117-3.185 0 0 1.008-.323 3.3 1.23A11.53 11.53 0 0112 6.5c1.02.004 2.042.138 3.003.404 2.29-1.553 3.3-1.23 3.3-1.23.653 1.655.241 2.882.118 3.185.77.841 1.236 1.914 1.236 3.227 0 4.61-2.805 5.63-5.475 5.93.43.37.815 1.096.815 2.206 0 1.592-.014 2.872-.014 3.258 0 .319.19.694.8.577C20.563 22.188 24 17.75 24 12.5 24 5.873 18.627.5 12 .5z" />
+                        </svg>
+                    </a>
+                    <button id="zoom-in-btn" class="control-btn" title="Zoom In">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-plus-icon lucide-plus">
+                            <path d="M5 12h14" />
+                            <path d="M12 5v14" />
+                        </svg>
+                    </button>
+                    <button id="zoom-out-btn" class="control-btn" title="Zoom Out">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-minus-icon lucide-minus">
+                            <path d="M5 12h14" />
+                        </svg>
+                    </button>
+                    <button id="fit-screen-btn" class="control-btn" title="Fit to Screen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-minimize-icon lucide-minimize">
+                            <path d="M8 3v3a2 2 0 0 1-2 2H3" />
+                            <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
+                            <path d="M3 16h3a2 2 0 0 1 2 2v3" />
+                            <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="svg-output"></div>
+
+            <div id="undo-redo-container">
+                <button id="mm-undo-btn" class="undo-redo-btn" title="Undo" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-undo-2">
+                        <path d="M9 14 4 9l5-5" />
+                        <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
+                    </svg>
+                </button>
+                <button id="mm-redo-btn" class="undo-redo-btn" title="Redo" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-redo-2">
+                        <path d="m15 14 5-5-5-5" />
+                        <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" />
+                    </svg>
+                </button>
+                <button id="fold-unfold-all-btn" class="undo-redo-btn" title="Fold/Unfold All">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m7 20 5-5 5 5"/><path d="m7 4 5 5 5-5"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="notes-drawer" class="notes-drawer">
+            <div class="notes-drawer-header">
+                <span id="notes-drawer-title">Node Notes</span>
+                <button id="notes-drawer-close" class="notes-drawer-close-btn" title="Close Notes">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div id="notes-drawer-editor" class="notes-drawer-editor" contenteditable="true" spellcheck="false" placeholder="Enter your notes here..."></div>
+        </div>
+    </main>
+    <script src="/renderer/renderer.js"></script>
+    <script src="/renderer/interaction.js"></script>
+    <script src="/renderer/notes.js"></script>
+    <script>
+        var container = document.getElementById('editor-container');
+        var isVisible = localStorage.getItem('editor-container-visible') === 'true';
+        container.style.display = isVisible ? 'block' : 'none';
+
+        document.getElementById('edit-json-btn').addEventListener('click', function () {
+            var container = document.getElementById('editor-container');
+            var isVisible = container.style.display !== 'none';
+            container.style.display = isVisible ? 'none' : 'block';
+            localStorage.setItem('editor-container-visible', !isVisible);
+        });
+
+        document.getElementById('zoom-in-btn').addEventListener('click', function () {
+            if (window.zoomMindMap) window.zoomMindMap(1.1);
+        });
+        document.getElementById('zoom-out-btn').addEventListener('click', function () {
+            if (window.zoomMindMap) window.zoomMindMap(0.9);
+        });
+        document.getElementById('fit-screen-btn').addEventListener('click', function () {
+            if (window.fitToScreen) window.fitToScreen();
+        });
+        document.getElementById('fold-unfold-all-btn').addEventListener('click', function () {
+            if (window.toggleFoldUnfoldAll) window.toggleFoldUnfoldAll();
+        });
+    </script>
+</body>
+
+</html>
