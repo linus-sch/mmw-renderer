@@ -1,12 +1,12 @@
-
 <div align="center">
   <h2 id="readme-top">
-    <img alt="Mind Map Wizard" src="https://mindmapwizard.com/SRC/assets/logo-mmw-dev.png" width="100px" alt="Mind Map Wizard Engine Logo"/>
+    <img src="https://raw.githubusercontent.com/linus-sch/mmw-renderer/refs/heads/main/SRC/assets/logo-mmw-dev.png" width="100px" alt="Mind Map Wizard Engine Logo"/>
     <br>
     Mind Map Wizard — Renderer
-      <br><br> 
+    <br><br> 
   </h2>
 </div>
+
 
 
 
