@@ -1,5 +1,3 @@
-
-
 window.openNotesDrawer = function (nodeId) {
     closeContextMenus();
     const node = findNodeByIdGlobal(currentHierarchy, nodeId);
@@ -17,6 +15,9 @@ window.openNotesDrawer = function (nodeId) {
         editorDiv.setAttribute('data-node-id', nodeId);
         drawer.classList.add('open');
 
+        window.__mmwNotesActiveNodeId = nodeId;
+        if (typeof __mmwApplyNotesOutline === 'function') __mmwApplyNotesOutline();
+
         setTimeout(() => editorDiv.focus(), 100);
     }
 };
@@ -28,6 +29,8 @@ window.closeNotesDrawer = function () {
         const editorDiv = document.getElementById('notes-drawer-editor');
         if (editorDiv) editorDiv.blur();
     }
+    window.__mmwNotesActiveNodeId = null;
+    if (typeof __mmwApplyNotesOutline === 'function') __mmwApplyNotesOutline();
 };
 
 function renderNotes(text, citations = []) {

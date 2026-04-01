@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mind Map Wizard Renderer Demo</title>
 
-    <link rel="icon" type="image/png" href="/assets/favicon128.png" sizes="16x16">
-    <link rel="icon" type="image/png" href="/assets/favicon96.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="/assets/favicon64.png" sizes="48x48">
-    <link rel="icon" type="image/png" href="/assets/favicon48.png" sizes="64x48">
-    <link rel="icon" type="image/png" href="/assets/favicon32.png" sizes="96x96">
-    <link rel="icon" type="image/png" href="/assets/favicon16.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="assets/favicon128.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="assets/favicon96.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="assets/favicon64.png" sizes="48x48">
+    <link rel="icon" type="image/png" href="assets/favicon48.png" sizes="64x48">
+    <link rel="icon" type="image/png" href="assets/favicon32.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="assets/favicon16.png" sizes="96x96">
 
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="styles.css">
 
     <meta name="description"
         content="A lightweight JavaScript tool that converts Markdown text into colorful SVG mind maps.">
@@ -22,13 +22,13 @@
     <meta property="og:description" content="A lightweight JavaScript tool that converts Markdown text into colorful SVG mind maps.
         ">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="/assets/meta-img-light.jpg">
+    <meta property="og:image" content="assets/meta-img-light.jpg">
     <meta property="og:url" content="https://js.mindmapwizard.com">
 
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Mind Map Wizard Renderer Demo">
     <meta name="twitter:description" content="A lightweight JavaScript tool for rendering Markdown as SVG mind maps.">
-    <meta name="twitter:image" content="/assets/meta-img-light.jpg">
+    <meta name="twitter:image" content="assets/meta-img-light.jpg">
 </head>
 
 <body>
@@ -37,9 +37,9 @@
         <div id="editor-container" style="display: none;">
             <div class="pane-header">
                 <div>
-                    <a href="https://github.com/linus-sch/mindmapwizard-renderer" style="text-decoration: none;"
+                    <a href="https://github.com/linus-sch/mmw-renderer" style="text-decoration: none;"
                         class="mmw-logo-desktop">
-                        <img src="/assets/favicon64.png" alt="MMW Logo" width="35px"
+                        <img src="assets/favicon64.png" alt="MMW Logo" width="35px"
                             style="position: relative; top: 3px;">
                     </a>
                     MMW JSON
@@ -51,9 +51,9 @@
         <div id="preview-container">
             <div class="pane-header">
                 <span>
-                    <a href="https://github.com/linus-sch/mindmapwizard-renderer" style="text-decoration: none;"
+                    <a href="https://github.com/linus-sch/mmw-renderer" style="text-decoration: none;"
                         class="mmw-logo-mobile">
-                        <img src="/assets/favicon64.png" alt="MMW Logo" width="35px"
+                        <img src="assets/favicon64.png" alt="MMW Logo" width="35px"
                             style="position: relative; top: 3px;">
                     </a>
                     Mind Map</span>
@@ -66,7 +66,7 @@
                             <polyline points="8,6 2,12 8,18" />
                         </svg>
                     </button>
-                    <a href="https://github.com/linus-sch/mindmapwizard-renderer">
+                    <a href="https://github.com/linus-sch/mmw-renderer">
                         <span class="hide-on-mobile">Source Code
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -107,9 +107,70 @@
                             <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
                         </svg>
                     </button>
+                    <button id="customize-btn" class="control-btn" title="Customize Style">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-settings-2">
+                            <path d="M20 7h-9" />
+                            <path d="M14 17H5" />
+                            <circle cx="17" cy="17" r="3" />
+                            <circle cx="7" cy="7" r="3" />
+                        </svg>
+                    </button>
                 </div>
             </div>
             <div id="svg-output"></div>
+
+            <div id="customization-popup" class="customization-popup">
+                <div class="popup-header">
+                    <h2>Customization Options</h2>
+                    <button id="close-popup-btn" class="close-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-right-close-icon lucide-panel-right-close"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M15 3v18"/><path d="m8 9 3 3-3 3"/></svg></button>
+                </div>
+
+                <div class="option-group">
+                    <label>Branch Positioning</label>
+                    <div class="segmented-control" id="branch-positioning">
+                        <button data-value="auto" class="active">Balanced</button>
+                        <button data-value="right">Right side</button>
+                    </div>
+                </div>
+
+                <div class="sliders-container">
+                    <div class="option-group">
+                        <label>Level Spacing</label>
+                        <input type="range" id="level-spacing-slider" min="50" max="200" value="100">
+                    </div>
+                    <div class="option-group">
+                        <label>Link Width</label>
+                        <input type="range" id="link-width-slider" min="1" max="10" value="4">
+                    </div>
+                    <div class="option-group">
+                        <label>Node Rounding</label>
+                        <input type="range" id="node-rounding-slider" min="0" max="30" value="14">
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label>Mind Map Style</label>
+                    <div class="segmented-control" id="mindmap-style">
+                        <button data-value="1" class="active">Standard</button>
+                        <button data-value="4">Lines</button>
+                        <button data-value="2">Minimal</button>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label>Font</label>
+                    <div class="select-wrapper">
+                        <select id="font-family-select">
+                            <option value="system-ui">Default</option>
+                            <option value="'Bebas Neue'">Bebas Neue</option>
+                            <option value="'PT Serif'">PT Serif</option>
+                            <option value="'Roboto Mono'">Roboto Mono</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
             <div id="undo-redo-container">
                 <button id="mm-undo-btn" class="undo-redo-btn" title="Undo" disabled>
@@ -150,9 +211,10 @@
             <div id="notes-drawer-editor" class="notes-drawer-editor" contenteditable="true" spellcheck="false" placeholder="Enter your notes here..."></div>
         </div>
     </main>
-    <script src="/renderer/renderer.js"></script>
-    <script src="/renderer/interaction.js"></script>
-    <script src="/renderer/notes.js"></script>
+    <script src="renderer/renderer.js"></script>
+    <script src="renderer/image-handler.js"></script>
+    <script src="renderer/interaction.js"></script>
+    <script src="renderer/notes.js"></script>
     <script>
         var container = document.getElementById('editor-container');
         var isVisible = localStorage.getItem('editor-container-visible') === 'true';
@@ -176,6 +238,107 @@
         });
         document.getElementById('fold-unfold-all-btn').addEventListener('click', function () {
             if (window.toggleFoldUnfoldAll) window.toggleFoldUnfoldAll();
+        });
+
+        const customizeBtn = document.getElementById('customize-btn');
+        const customizationPopup = document.getElementById('customization-popup');
+        const closePopupBtn = document.getElementById('close-popup-btn');
+
+        customizeBtn.addEventListener('click', () => {
+            customizationPopup.classList.toggle('active');
+            if (customizationPopup.classList.contains('active')) {
+                syncPopupWithSettings();
+            }
+        });
+
+        closePopupBtn.addEventListener('click', () => {
+            customizationPopup.classList.remove('active');
+        });
+
+        function syncPopupWithSettings() {
+            const settings = window.__mmwGetCurrentSettings() || {};
+            
+            const branchPos = settings.branchAlignmentMode || 'auto';
+            document.querySelectorAll('#branch-positioning button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === branchPos);
+            });
+
+            const levelSpacing = settings.spacing || settings.levelSpacing || 100;
+            const linkWidth = settings.linkWidth || 4;
+            const nodeRounding = settings['border-radius'] ?? settings.borderRadius ?? settings.nodeRadius ?? 14;
+
+            const lsSlider = document.getElementById('level-spacing-slider');
+            lsSlider.value = levelSpacing;
+            updateSliderFill(lsSlider);
+
+            const lwSlider = document.getElementById('link-width-slider');
+            lwSlider.value = linkWidth;
+            updateSliderFill(lwSlider);
+
+            const nrSlider = document.getElementById('node-rounding-slider');
+            nrSlider.value = nodeRounding;
+            updateSliderFill(nrSlider);
+
+            const style = settings.style || '1';
+            document.querySelectorAll('#mindmap-style button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === style);
+            });
+
+            const font = settings.fontFamily || 'system-ui';
+            document.getElementById('font-family-select').value = font;
+        }
+
+        function updateSliderFill(slider) {
+            const min = slider.min || 0;
+            const max = slider.max || 100;
+            const val = slider.value;
+            const percentage = (val - min) / (max - min) * 100;
+            slider.style.setProperty('--value', percentage + '%');
+        }
+
+        function updateSettings(newSettings) {
+            try {
+                const editor = document.getElementById('json-editor');
+                const data = JSON.parse(editor.value || '{}');
+                data['mm-settings'] = { ...(data['mm-settings'] || {}), ...newSettings };
+                editor.value = JSON.stringify(data, null, 2);
+                window.updateMindMap();
+            } catch (e) {
+                console.error('Failed to update settings:', e);
+            }
+        }
+
+        document.querySelectorAll('#branch-positioning button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                updateSettings({ branchAlignmentMode: btn.dataset.value });
+                syncPopupWithSettings();
+            });
+        });
+
+        document.querySelectorAll('#mindmap-style button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                updateSettings({ style: btn.dataset.value });
+                syncPopupWithSettings();
+            });
+        });
+
+        document.getElementById('level-spacing-slider').addEventListener('input', (e) => {
+            updateSliderFill(e.target);
+            updateSettings({ spacing: parseInt(e.target.value) });
+        });
+
+        document.getElementById('link-width-slider').addEventListener('input', (e) => {
+            updateSliderFill(e.target);
+            updateSettings({ linkWidth: parseInt(e.target.value) });
+        });
+
+        document.getElementById('node-rounding-slider').addEventListener('input', (e) => {
+            updateSliderFill(e.target);
+            updateSettings({ 'border-radius': parseInt(e.target.value) });
+        });
+
+        document.getElementById('font-family-select').addEventListener('change', (e) => {
+            updateSettings({ fontFamily: e.target.value });
         });
     </script>
 </body>
