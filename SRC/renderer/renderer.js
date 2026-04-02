@@ -438,7 +438,8 @@ function generateSVG(jsonString, options = {}) {
             collapsed: !!jsonNode.collapsed,
             notes: jsonNode.notes || '',
             citations: jsonNode.citations || [],
-            imageSize: jsonNode.imageSize || null
+            imageSize: jsonNode.imageSize || null,
+            checked: jsonNode.checked !== undefined ? jsonNode.checked : undefined
         };
         if (jsonNode.children && Array.isArray(jsonNode.children)) {
             jsonNode.children.forEach((childJson, index) => {
@@ -651,6 +652,9 @@ function generateSVG(jsonString, options = {}) {
 
             const textWidth = Math.ceil(maxLineW);
             node.rectWidth = Math.max(textWidth + horizontalPadding * 2, horizontalPadding * 2 + 1);
+            if (node.checked !== undefined) {
+                node.rectWidth += 26;
+            }
             if (node.notes && node.notes.trim().length > 0) {
                 node.rectWidth += 30;
             }
@@ -1085,6 +1089,28 @@ function generateSVG(jsonString, options = {}) {
                     textX = horizontalPadding;
                 }
 
+                let checkboxSvg = '';
+                if (node.checked !== undefined) {
+                    textAnchor = 'start';
+                    textX = horizontalPadding + 26;
+                    
+                    const cbSize = 16;
+                    const cbX = horizontalPadding;
+                    const cbY = (node.rectHeight - cbSize) / 2;
+                    const cbRadius = Math.min(nodeRadius || 0, 4);
+                    
+                    const checkedFill = node.checked ? branchColor : '#ffffff';
+                    const opacityOp = (node.id === editingId) ? 0 : 1;
+                    
+                    checkboxSvg += `<g class="mmw-checkbox" data-node-id="${node.id}" transform="translate(${cbX}, ${cbY})" style="cursor: pointer; pointer-events: all;" opacity="${opacityOp}">`;
+                    checkboxSvg += `<rect x="-8" y="-8" width="32" height="32" fill="transparent" stroke="none" />`;
+                    checkboxSvg += `<rect x="0" y="0" width="${cbSize}" height="${cbSize}" rx="${cbRadius}" fill="${checkedFill}" stroke="${branchColor}" stroke-width="2" />`;
+                    if (node.checked) {
+                        checkboxSvg += `<path d="M 4 8 L 7 11 L 12 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" pointer-events="none"/>`;
+                    }
+                    checkboxSvg += `</g>`;
+                }
+
                 if (Array.isArray(node.__mdLines) && node.__mdLines.length) {
                     let lineData = [];
                     let currentY = verticalPadding;
@@ -1108,6 +1134,7 @@ function generateSVG(jsonString, options = {}) {
                     });
 
                     {
+                        if (checkboxSvg) svg += checkboxSvg;
                         const __mmwTxtOp = (node.id === editingId) ? 0 : 1;
                         svg += `<text opacity="${__mmwTxtOp}" x="${textX}" y="${verticalPadding + currentFontSize}" font-family="${fontFamily}" font-size="${currentFontSize}px" font-weight="${currentFontWeight}" fill="var(--text-color)" text-anchor="${textAnchor}" xml:space="preserve">`;
                         let firstTextLine = true;
@@ -1143,6 +1170,7 @@ function generateSVG(jsonString, options = {}) {
                     }
                 } else if (node.textLines.length > 0) {
                     {
+                        if (checkboxSvg) svg += checkboxSvg;
                         const __mmwTxtOp = (node.id === editingId) ? 0 : 1;
                         svg += `<text opacity="${__mmwTxtOp}" x="${textX}" y="${verticalPadding + currentFontSize}" font-family="${fontFamily}" font-size="${currentFontSize}px" font-weight="${currentFontWeight}" fill="var(--text-color)" text-anchor="${textAnchor}" xml:space="preserve">`;
                         let first = true;
@@ -1342,6 +1370,27 @@ function generateSVG(jsonString, options = {}) {
                 textX = horizontalPadding;
             }
 
+            let checkboxSvg = '';
+            if (node.checked !== undefined) {
+                textAnchor = 'start';
+                textX = horizontalPadding + 26;
+                const cbSize = 16;
+                const cbX = horizontalPadding;
+                const cbY = (node.rectHeight - cbSize) / 2;
+                const cbRadius = Math.min(nodeRadius || 0, 4);
+                
+                const checkedFill = node.checked ? branchColor : '#ffffff';
+                const opacityOp = (node.id === editingId) ? 0 : 1;
+                
+                checkboxSvg += `<g class="mmw-checkbox" data-node-id="${node.id}" transform="translate(${cbX}, ${cbY})" style="cursor: pointer; pointer-events: all;" opacity="${opacityOp}">`;
+                checkboxSvg += `<rect x="-8" y="-8" width="32" height="32" fill="transparent" stroke="none" />`;
+                checkboxSvg += `<rect x="0" y="0" width="${cbSize}" height="${cbSize}" rx="${cbRadius}" fill="${checkedFill}" stroke="${branchColor}" stroke-width="2" />`;
+                if (node.checked) {
+                    checkboxSvg += `<path d="M 4 8 L 7 11 L 12 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" pointer-events="none"/>`;
+                }
+                checkboxSvg += `</g>`;
+            }
+
             if (Array.isArray(node.__mdLines) && node.__mdLines.length) {
                 let lineData = [];
                 let currentY = verticalPadding;
@@ -1365,6 +1414,7 @@ function generateSVG(jsonString, options = {}) {
                 });
 
                 {
+                    if (checkboxSvg) s += checkboxSvg;
                     const __mmwTxtOp = (node.id === editingId) ? 0 : 1;
                     s += `<text opacity="${__mmwTxtOp}" x="${textX}" y="${verticalPadding + currentFontSize}" font-family="${fontFamily}" font-size="${currentFontSize}px" font-weight="${currentFontWeight}" fill="var(--text-color)" text-anchor="${textAnchor}" xml:space="preserve">`;
                     let firstTextLine = true;
@@ -1409,6 +1459,7 @@ function generateSVG(jsonString, options = {}) {
                 }
             } else if (node.textLines.length > 0) {
                 {
+                    if (checkboxSvg) s += checkboxSvg;
                     const __mmwTxtOp = (node.id === editingId) ? 0 : 1;
                     s += `<text opacity="${__mmwTxtOp}" x="${textX}" y="${verticalPadding + currentFontSize}" font-family="${fontFamily}" font-size="${currentFontSize}px" font-weight="${currentFontWeight}" fill="var(--text-color)" text-anchor="${textAnchor}" xml:space="preserve">`;
                     let first = true;
@@ -1952,7 +2003,7 @@ function showImageLoadingPlaceholder(img) {
     
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'mm-image-loading';
-    loadingDiv.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:40px;height:40px;min-width:40px;min-height:40px;max-width:40px;max-height:40px;flex-shrink:0"><circle cx="12" cy="12" r="10" fill="none" stroke-width="2" style="stroke:var(--light-grey)"/><path d="M12 2a10 10 0 0 1 10 10" stroke-width="2.5" stroke-linecap="round" style="stroke:var(--accent-color)"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path></svg>`;
+    loadingDiv.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:40px;height:40px;min-width:40px;min-height:40px;max-width:40px;max-height:40px;flex-shrink:0"><circle cx="12" cy="12" r="10" fill="none" stroke-width="2" style="stroke:var(--light-grey)"/><path d="M12 2a10 10 0 0 1 10 10" stroke-width="2.5" stroke-linecap="round" style="stroke:var(--primary-color)"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path></svg>`;
     
     const width = img.style.maxWidth || img.getAttribute('width') || '100%';
     const height = img.style.maxHeight || img.getAttribute('height') || '100%';
@@ -2043,7 +2094,7 @@ function showImageNotFoundError(img, message) {
     const width = img.style.maxWidth || img.getAttribute('width') || '100%';
     const height = img.style.maxHeight || img.getAttribute('height') || '100%';
     errorDiv.style.cssText = `
-        width: ${width};mm-notes-outline
+        width: ${width};
         height: ${height};
         display: flex;
         flex-direction: column;

@@ -614,7 +614,8 @@ function convertJsonToNode(jsonNode, level, pathId) {
         branchColor: jsonNode.branchColor,
         collapsed: !!jsonNode.collapsed,
         notes: jsonNode.notes || '',
-        imageSize: jsonNode.imageSize || null
+        imageSize: jsonNode.imageSize || null,
+        checked: jsonNode.checked !== undefined ? jsonNode.checked : undefined
     };
     if (jsonNode.children && Array.isArray(jsonNode.children)) {
         jsonNode.children.forEach((childJson, index) => {
@@ -728,7 +729,7 @@ function attachEventListeners() {
                 return;
             }
 
-            if (e.target.closest && e.target.closest('.mm-add-btn')) {
+            if (e.target.closest && (e.target.closest('.mm-add-btn') || e.target.closest('.mmw-checkbox'))) {
                 return;
             }
             e.stopPropagation();
@@ -831,6 +832,21 @@ function attachEventListeners() {
             showContextMenu(e);
         });
         svg.__mmwContextHandlerAttached = true;
+    }
+
+    if (!svg.__mmwCheckboxHandlerAttached) {
+        svg.addEventListener('click', (e) => {
+            const btn = e.target && typeof e.target.closest === 'function' ? e.target.closest('.mmw-checkbox') : null;
+            if (!btn) return;
+            e.stopPropagation();
+            e.preventDefault();
+            const nodeGroup = btn.closest('.mm-node');
+            const nodeId = nodeGroup ? nodeGroup.getAttribute('data-node-id') : btn.getAttribute('data-node-id');
+            if (nodeId && typeof window.toggleCheckboxState === 'function') {
+                window.toggleCheckboxState(nodeId);
+            }
+        });
+        svg.__mmwCheckboxHandlerAttached = true;
     }
 }
 
@@ -1782,6 +1798,18 @@ function showContextMenu(e) {
                             </svg>
                             Add Notes
                         </div>` : ''}
+
+                        ${targetNode && targetNode.checked === undefined ? `<div class="context-menu-button" onclick="window.toggleCheckbox()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.3rem" height="1.3rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: -2px;">
+                                <polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                            Add Checkbox
+                        </div>` : `<div class="context-menu-button" onclick="window.toggleCheckbox()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.3rem" height="1.3rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: -2px;">
+                                <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Remove Checkbox
+                        </div>`}
                         
                          ${isLevelDeepEnough ? `<div class="context-menu-button ai-expand-button" onclick="expandMindMapNode()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2971,6 +2999,56 @@ window.setBranchColor = function (color) {
     }
 };
 
+window.toggleCheckbox = function () {
+    if (!window.currentNodeElement) return;
+    closeContextMenus();
+    const nodeEl = window.currentNodeElement;
+    const nodeId = nodeEl.getAttribute('data-node-id');
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+    const target = findNodeById(currentHierarchy, nodeId);
+    if (!target) return;
+    HistoryManager.captureState();
+    if (target.checked === undefined) {
+        target.checked = false;
+    } else {
+        target.checked = undefined;
+    }
+    const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+    editor.value = json;
+    localStorage.setItem(localStorageKey, json);
+    updateMindMap();
+    triggerAutoSave();
+};
+
+window.toggleCheckboxState = function (nodeId) {
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+    const target = findNodeById(currentHierarchy, nodeId);
+    if (!target) return;
+    if (target.checked !== undefined) {
+        HistoryManager.captureState();
+        target.checked = !target.checked;
+        const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+        editor.value = json;
+        localStorage.setItem(localStorageKey, json);
+        updateMindMap();
+        triggerAutoSave();
+    }
+};
+
 window.resetBranchColor = function () {
     if (!window.currentNodeElement) return;
     closeContextMenus();
@@ -4088,6 +4166,9 @@ function hierarchyToJson(hierarchy) {
         }
         if (node.imageSize && node.text && typeof node.text === 'string' && window.isImageRef && window.isImageRef(node.text)) {
             obj.imageSize = node.imageSize;
+        }
+        if (node.checked !== undefined) {
+            obj.checked = node.checked;
         }
         if (node.children && node.children.length > 0) {
             obj.children = node.children.map(convert);
